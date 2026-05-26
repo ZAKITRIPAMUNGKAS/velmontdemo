@@ -36,18 +36,22 @@ const getCurrentPageName = () => {
 
 // 2. Initialize default data in localStorage if empty
 const initDefaultData = () => {
-    // Self-healing migration for old data format
     let existingUsers = localStorage.getItem('velmont_users');
-    if (existingUsers) {
-        try {
+    let shouldInit = false;
+    try {
+        if (!existingUsers) {
+            shouldInit = true;
+        } else {
             const parsed = JSON.parse(existingUsers);
-            if (parsed.length > 0 && parsed[0].name && !parsed[0].fullName) {
-                localStorage.removeItem('velmont_users');
+            if (!Array.isArray(parsed) || parsed.length === 0 || (parsed.length > 0 && parsed[0].name && !parsed[0].fullName)) {
+                shouldInit = true;
             }
-        } catch(e) {}
+        }
+    } catch(e) {
+        shouldInit = true;
     }
 
-    if (!localStorage.getItem('velmont_users')) {
+    if (shouldInit) {
         localStorage.setItem('velmont_users', JSON.stringify([
             { id: "1", fullName: "Moza Leonardo", username: "moza.leonardo", role: "CEO", level: 6, outlet: "Lakehouse" },
             { id: "2", fullName: "Leticia Alaric", username: "leticia.alaric", role: "CEO", level: 6, outlet: "Lakehouse" },
