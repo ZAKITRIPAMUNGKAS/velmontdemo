@@ -485,7 +485,7 @@ const checkPageAuthorization = () => {
                 forbiddenPanel.style.display = 'none';
             }
             if (mainContentLayout) {
-                mainContentLayout.style.display = 'flex';
+                mainContentLayout.style.display = '';
             }
         }
     }
