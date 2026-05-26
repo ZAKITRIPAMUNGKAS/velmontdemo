@@ -345,20 +345,26 @@
                     <i class="ph-fill ph-storefront"></i> Shift Kru
                 </div>
 
-                <form onsubmit="event.preventDefault(); document.getElementById('btn-text').innerText = 'Loading...';">
+                <form onsubmit="handleLogin(event)">
                     
                     <div class="form-group">
-                        <label>Nama Pengguna</label>
+                        <label>Pilih Akun / Role Simulator</label>
                         <div class="input-wrapper">
-                            <input type="text" placeholder="misal: moza.leonardo" required autocomplete="username">
-                            <i class="ph-bold ph-user"></i>
+                            <select id="login-role" style="width: 100%; padding: 12px 16px 12px 44px; background: var(--input-bg); border: 3px solid var(--input-border); border-radius: 16px; color: var(--text-main); font-family: var(--font-game); font-size: 1rem; font-weight: 700; outline: none; appearance: none; cursor: pointer;" required>
+                                <option value="ceo">Moza Leonardo (CEO - Lvl 6)</option>
+                                <option value="manager">Valerie Swan (Manajer - Lvl 5)</option>
+                                <option value="svp">Kael Percival (SVP - Lvl 4)</option>
+                                <option value="supplier">Winston Stark (Supplier - Lvl 4)</option>
+                                <option value="warlok">Budi Warlok (Intern - Lvl 1)</option>
+                            </select>
+                            <i class="ph-bold ph-shield-check"></i>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label>Kata Sandi</label>
+                        <label>Kode Sandi Cepat</label>
                         <div class="input-wrapper">
-                            <input type="password" placeholder="••••••••" required autocomplete="current-password">
+                            <input type="password" id="login-password" placeholder="Bebas isi apa saja (Demo)" required autocomplete="current-password">
                             <i class="ph-bold ph-lock-key"></i>
                         </div>
                     </div>
@@ -369,6 +375,21 @@
                     </button>
                     
                 </form>
+
+                <script>
+                    function handleLogin(event) {
+                        event.preventDefault();
+                        const btnText = document.getElementById('btn-text');
+                        btnText.innerText = 'Menghubungkan...';
+                        
+                        const chosenRole = document.getElementById('login-role').value;
+                        localStorage.setItem('velmont_session_role', chosenRole);
+                        
+                        setTimeout(() => {
+                            window.location.href = 'dashboard.html';
+                        }, 800);
+                    }
+                </script>
 
                 <a href="../index.html" class="back-link">
                     <i class="ph-bold ph-arrow-u-up-left"></i> Kembali ke Menu Utama
