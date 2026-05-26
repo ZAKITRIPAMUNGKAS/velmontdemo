@@ -99,6 +99,13 @@ const injectGlobalStyles = () => {
             display: flex !important;
             flex-direction: column !important;
             flex-grow: 1;
+            animation: cozyPopIn 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards !important;
+            opacity: 0;
+        }
+
+        @keyframes cozyPopIn {
+            0% { transform: scale(0.93) translateY(30px) rotate(-0.5deg); opacity: 0; }
+            100% { transform: scale(1) translateY(0) rotate(0deg); opacity: 1; }
         }
 
         .game-ui-card {
@@ -112,6 +119,44 @@ const injectGlobalStyles = () => {
             height: calc(100% - 50px) !important;
             max-height: none !important;
             overflow-y: auto !important;
+        }
+
+        /* Cozy Webkit Scrollbar */
+        .card-body::-webkit-scrollbar {
+            width: 8px !important;
+        }
+        .card-body::-webkit-scrollbar-track {
+            background: transparent !important;
+        }
+        .card-body::-webkit-scrollbar-thumb {
+            background: #E8D8D0 !important;
+            border-radius: 10px !important;
+            border: 2px solid #FDF8F5 !important;
+            transition: background 0.2s !important;
+        }
+        .card-body::-webkit-scrollbar-thumb:hover {
+            background: #D66D40 !important;
+        }
+
+        /* Dynamic Panel Box Transitions */
+        .panel-box {
+            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.1) !important;
+        }
+        .panel-box:hover {
+            transform: translateY(-2px) !important;
+        }
+
+        /* Cozy Hover & Press States for Buttons */
+        .btn-game, .btn-submit, .btn-action, .tab-btn {
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        }
+        .btn-game:hover, .btn-submit:hover {
+            transform: translateY(-3px) scale(1.02) !important;
+            box-shadow: 0 8px 0 #4A332A !important;
+        }
+        .btn-game:active, .btn-submit:active {
+            transform: translateY(3px) scale(0.98) !important;
+            box-shadow: 0 2px 0 #4A332A !important;
         }
 
         /* Cozy Game Sidebar */
@@ -206,7 +251,7 @@ const injectGlobalStyles = () => {
             text-decoration: none;
             font-weight: 800;
             font-size: 0.9rem;
-            transition: all 0.15s ease;
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             border: 2px solid transparent;
         }
 
@@ -219,7 +264,7 @@ const injectGlobalStyles = () => {
         .nav-item:hover {
             background-color: #FFF2EB;
             border-color: #4A332A;
-            transform: scale(1.02);
+            transform: translateX(6px) scale(1.02);
         }
 
         .nav-item.active {
