@@ -167,13 +167,51 @@ const injectGlobalStyles = () => {
         .btn-game, .btn-submit, .btn-action, .tab-btn {
             transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
         }
+        .btn-game {
+            padding: 12px 20px !important;
+            color: white !important;
+            font-weight: 900 !important;
+            font-size: 1rem !important;
+            font-family: 'Nunito', sans-serif !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            border: 3px solid #4A332A !important;
+            border-radius: 14px !important;
+            cursor: pointer !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 8px !important;
+            box-shadow: 0 5px 0 #4A332A !important;
+            background: #D66D40 !important;
+        }
+        .btn-primary {
+            background: #D66D40 !important;
+            box-shadow: 0 5px 0 #B25028 !important;
+        }
+        .btn-green {
+            background: #5D8A56 !important;
+            box-shadow: 0 5px 0 #3E5E39 !important;
+        }
         .btn-game:hover, .btn-submit:hover {
             transform: translateY(-3px) scale(1.02) !important;
             box-shadow: 0 8px 0 #4A332A !important;
         }
+        .btn-primary:hover {
+            box-shadow: 0 8px 0 #B25028 !important;
+        }
+        .btn-green:hover {
+            box-shadow: 0 8px 0 #3E5E39 !important;
+        }
         .btn-game:active, .btn-submit:active {
             transform: translateY(3px) scale(0.98) !important;
             box-shadow: 0 2px 0 #4A332A !important;
+        }
+        .btn-primary:active {
+            box-shadow: 0 2px 0 #B25028 !important;
+        }
+        .btn-green:active {
+            box-shadow: 0 2px 0 #3E5E39 !important;
         }
 
         .btn-game:disabled, .btn-submit:disabled, button:disabled {
