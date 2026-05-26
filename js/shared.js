@@ -98,13 +98,23 @@ const injectGlobalStyles = () => {
             margin: 0 !important;
             width: 100% !important;
             max-width: 100% !important;
+            height: ${isDashboard ? 'calc(100vh - 80px)' : 'auto'} !important;
+            display: flex !important;
+            flex-direction: column !important;
+            flex-grow: 1;
+        }
+
+        .game-ui-card {
+            height: ${isDashboard ? '100%' : 'auto'} !important;
+            display: flex !important;
+            flex-direction: column !important;
             flex-grow: 1;
         }
 
         .card-body {
-            height: auto !important;
+            height: ${isDashboard ? 'calc(100% - 50px)' : 'auto'} !important;
             max-height: none !important;
-            overflow-y: visible !important;
+            overflow-y: ${isDashboard ? 'auto' : 'visible'} !important;
         }
 
         /* Cozy Game Sidebar */
