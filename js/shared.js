@@ -70,25 +70,27 @@ const initDefaultData = () => {
 
 initDefaultData();
 
-// 3. Inject CSS for Global Sidebar Navigation & Responsive Layout
 const injectGlobalStyles = () => {
+    const currentPage = getCurrentPageName();
+    const isDashboard = currentPage === 'dashboard.html';
+
     const styleEl = document.createElement('style');
     styleEl.innerHTML = `
         html {
-            overflow-y: auto !important;
-            height: auto !important;
+            overflow-y: ${isDashboard ? 'hidden' : 'auto'} !important;
+            height: ${isDashboard ? '100vh' : 'auto'} !important;
         }
 
         body {
             padding: 30px 30px 50px 290px !important;
             justify-content: flex-start !important;
-            align-items: flex-start !important;
+            align-items: ${isDashboard ? 'center' : 'flex-start'} !important;
             display: flex !important;
             flex-direction: row !important;
             min-height: 100vh !important;
-            height: auto !important;
+            height: ${isDashboard ? '100vh' : 'auto'} !important;
             overflow-x: hidden !important;
-            overflow-y: visible !important;
+            overflow-y: ${isDashboard ? 'hidden' : 'visible'} !important;
             transition: padding-left 0.3s ease;
         }
 
