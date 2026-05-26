@@ -36,12 +36,25 @@ const getCurrentPageName = () => {
 
 // 2. Initialize default data in localStorage if empty
 const initDefaultData = () => {
+    // Self-healing migration for old data format
+    let existingUsers = localStorage.getItem('velmont_users');
+    if (existingUsers) {
+        try {
+            const parsed = JSON.parse(existingUsers);
+            if (parsed.length > 0 && parsed[0].name && !parsed[0].fullName) {
+                localStorage.removeItem('velmont_users');
+            }
+        } catch(e) {}
+    }
+
     if (!localStorage.getItem('velmont_users')) {
         localStorage.setItem('velmont_users', JSON.stringify([
-            { id: 'usr-1', name: 'Moza Leonardo', role: 'ceo', salary: 15000000 },
-            { id: 'usr-2', name: 'Valerie Swan', role: 'manager', salary: 8500000 },
-            { id: 'usr-3', name: 'Kael Percival', role: 'svp', salary: 6000000 },
-            { id: 'usr-4', name: 'Budi Warlok', role: 'warlok', salary: 2500000 }
+            { id: "1", fullName: "Moza Leonardo", username: "moza.leonardo", role: "CEO", level: 6, outlet: "Lakehouse" },
+            { id: "2", fullName: "Leticia Alaric", username: "leticia.alaric", role: "CEO", level: 6, outlet: "Lakehouse" },
+            { id: "3", fullName: "Valerie Swan", username: "valerie.swan", role: "Manajer", level: 5, outlet: "Lakehouse" },
+            { id: "4", fullName: "Kael Percival", username: "kael.percival", role: "SVP", level: 4, outlet: "Lakehouse" },
+            { id: "5", fullName: "Silas Veyron", username: "silas.veyron", role: "Senior Chef", level: 2, outlet: "Lakehouse" },
+            { id: "6", fullName: "Lance El Sailor", username: "lance.el.sailor", role: "Intern", level: 0, outlet: "Lakehouse" }
         ]));
     }
     if (!localStorage.getItem('velmont_session_role')) {
