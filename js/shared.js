@@ -71,26 +71,23 @@ const initDefaultData = () => {
 initDefaultData();
 
 const injectGlobalStyles = () => {
-    const currentPage = getCurrentPageName();
-    const isDashboard = currentPage === 'dashboard.html';
-
     const styleEl = document.createElement('style');
     styleEl.innerHTML = `
         html {
-            overflow-y: ${isDashboard ? 'hidden' : 'auto'} !important;
-            height: ${isDashboard ? '100vh' : 'auto'} !important;
+            overflow-y: hidden !important;
+            height: 100vh !important;
         }
 
         body {
             padding: 30px 30px 50px 290px !important;
             justify-content: flex-start !important;
-            align-items: ${isDashboard ? 'center' : 'flex-start'} !important;
+            align-items: center !important;
             display: flex !important;
             flex-direction: row !important;
             min-height: 100vh !important;
-            height: ${isDashboard ? '100vh' : 'auto'} !important;
+            height: 100vh !important;
             overflow-x: hidden !important;
-            overflow-y: ${isDashboard ? 'hidden' : 'visible'} !important;
+            overflow-y: hidden !important;
             transition: padding-left 0.3s ease;
         }
 
@@ -98,23 +95,23 @@ const injectGlobalStyles = () => {
             margin: 0 !important;
             width: 100% !important;
             max-width: 100% !important;
-            height: ${isDashboard ? 'calc(100vh - 80px)' : 'auto'} !important;
+            height: calc(100vh - 80px) !important;
             display: flex !important;
             flex-direction: column !important;
             flex-grow: 1;
         }
 
         .game-ui-card {
-            height: ${isDashboard ? '100%' : 'auto'} !important;
+            height: 100% !important;
             display: flex !important;
             flex-direction: column !important;
             flex-grow: 1;
         }
 
         .card-body {
-            height: ${isDashboard ? 'calc(100% - 50px)' : 'auto'} !important;
+            height: calc(100% - 50px) !important;
             max-height: none !important;
-            overflow-y: ${isDashboard ? 'auto' : 'visible'} !important;
+            overflow-y: auto !important;
         }
 
         /* Cozy Game Sidebar */
