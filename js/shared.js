@@ -159,6 +159,17 @@ const injectGlobalStyles = () => {
             box-shadow: 0 2px 0 #4A332A !important;
         }
 
+        .btn-game:disabled, .btn-submit:disabled, button:disabled {
+            pointer-events: none !important;
+            transform: none !important;
+            box-shadow: none !important;
+            opacity: 0.65 !important;
+            background: #E8D8D0 !important;
+            color: #9A7B6D !important;
+            border-color: #4A332A !important;
+            cursor: not-allowed !important;
+        }
+
         /* Cozy Game Sidebar */
         .cozy-sidebar {
             position: fixed;

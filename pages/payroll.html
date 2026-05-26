@@ -336,7 +336,7 @@
             let payButtonHtml = "";
             if (emp.basicSalary !== null) {
                 payButtonHtml = isPaid
-                    ? `<button class="btn-game btn-green" disabled style="width: 100%; margin-top: 15px; background: #BDC3C7; border-color: #4A332A; box-shadow: none; cursor: not-allowed; color:#7F8C8D;"><i class="ph-bold ph-check-square"></i> Gaji Telah Dibayar</button>`
+                    ? `<button class="btn-game" disabled style="width: 100%; margin-top: 15px;"><i class="ph-bold ph-check-square"></i> Gaji Telah Dibayar</button>`
                     : `<button class="btn-game btn-primary" id="btn-pay-salary" onclick="triggerPayment('${emp.id}')" style="width: 100%; margin-top: 15px;"><i class="ph-bold ph-hand-coins"></i> Bayar Gaji (Transfer)</button>`;
             }
 
@@ -405,11 +405,6 @@
                 // Disable button
                 if (payButton) {
                     payButton.innerHTML = `<i class="ph-bold ph-check-square"></i> Gaji Telah Dibayar`;
-                    payButton.style.background = '#BDC3C7';
-                    payButton.style.borderColor = '#4A332A';
-                    payButton.style.boxShadow = 'none';
-                    payButton.style.cursor = 'not-allowed';
-                    payButton.style.color = '#7F8C8D';
                     payButton.disabled = true;
                 }
             }, 50);
