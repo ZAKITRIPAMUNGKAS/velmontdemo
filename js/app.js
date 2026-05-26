@@ -29,6 +29,12 @@ const CHAR_IMGS = {
     noted: basePath + 'assets/karakter/noted.png'
 };
 
+// Preload character images for smooth animation
+Object.values(CHAR_IMGS).forEach(src => {
+    const img = new Image();
+    img.src = src;
+});
+
 // 1. Mouse coordinates & Custom Cursor Glow
 document.addEventListener('mousemove', (e) => {
     // Custom cursor glow position
