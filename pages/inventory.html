@@ -231,11 +231,9 @@
         if (!localStorage.getItem('velmont_inventory_logs')) localStorage.setItem('velmont_inventory_logs', JSON.stringify(movementLogs));
 
         let currentSource = "warlok";
-        let simulatedRole = "svp";
         let selectedItem = null;
 
         function changeSimulatedRole() {
-            simulatedRole = document.getElementById("role-selector").value;
             checkPermissions();
         }
 
@@ -243,7 +241,9 @@
             const forbiddenPanel = document.getElementById("forbidden-panel");
             const mainContent = document.getElementById("main-content-layout");
             const addItemPanel = document.getElementById("add-item-panel");
-            const hasSupplierAccess = (simulatedRole === "svp" || simulatedRole === "ceo");
+            
+            const activeRole = getActiveRole();
+            const hasSupplierAccess = activeRole.level >= 4;
 
             if (currentSource === "supplier" && !hasSupplierAccess) {
                 forbiddenPanel.style.display = "flex";
@@ -252,6 +252,19 @@
                 forbiddenPanel.style.display = "none";
                 mainContent.style.display = "grid";
                 addItemPanel.style.display = hasSupplierAccess ? "block" : "none";
+                
+                // Restrict IN option for users below level 4
+                const moveTypeSelect = document.getElementById("move-type");
+                if (moveTypeSelect) {
+                    const inOption = moveTypeSelect.querySelector('option[value="IN"]');
+                    if (!hasSupplierAccess) {
+                        if (inOption) inOption.disabled = true;
+                        moveTypeSelect.value = "OUT";
+                    } else {
+                        if (inOption) inOption.disabled = false;
+                    }
+                }
+                
                 renderItems();
                 renderMovementHistory();
             }
@@ -304,6 +317,12 @@
             if (qty <= 0) { alert("Jumlah mutasi harus lebih besar dari 0!"); return; }
             if (type === "OUT" && selectedItem.qty - qty < 0) { alert("Mutasi gagal! Stok tidak boleh negatif."); return; }
 
+            const activeRole = getActiveRole();
+            if (type === "IN" && activeRole.level < 4) {
+                alert("Akses Ditolak! Hanya level 4 (Supplier) ke atas yang bisa menambahkan/memasukkan stok barang.");
+                return;
+            }
+
             if (type === "IN") selectedItem.qty += qty; else selectedItem.qty -= qty;
 
             if (currentSource === "warlok") localStorage.setItem('velmont_inventory_warlok', JSON.stringify(warlokItems));
@@ -321,6 +340,11 @@
 
         function handleAddItemSubmit(event) {
             event.preventDefault();
+            const activeRole = getActiveRole();
+            if (activeRole.level < 4) {
+                alert("Akses Ditolak! Hanya level 4 (Supplier) ke atas yang bisa menambah item baru.");
+                return;
+            }
             const name = document.getElementById("new-item-name").value.trim().toUpperCase();
             const qty = parseInt(document.getElementById("new-item-qty").value);
             if (!name) return;
