@@ -93,8 +93,9 @@ const injectGlobalStyles = () => {
         }
 
         .game-window {
-            margin: 20px auto !important;
-            width: calc(100% - 20px) !important;
+            margin: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
             flex-grow: 1;
         }
 
