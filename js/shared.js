@@ -74,16 +74,21 @@ initDefaultData();
 const injectGlobalStyles = () => {
     const styleEl = document.createElement('style');
     styleEl.innerHTML = `
-        /* Cozy Layout Adjustments */
+        html {
+            overflow-y: auto !important;
+            height: auto !important;
+        }
+
         body {
-            padding-left: 290px !important;
+            padding: 30px 30px 50px 290px !important;
             justify-content: flex-start !important;
-            align-items: center !important;
+            align-items: flex-start !important;
             display: flex !important;
             flex-direction: row !important;
             min-height: 100vh !important;
+            height: auto !important;
             overflow-x: hidden !important;
-            overflow-y: auto !important;
+            overflow-y: visible !important;
             transition: padding-left 0.3s ease;
         }
 
@@ -295,8 +300,7 @@ const injectGlobalStyles = () => {
         /* Responsive Breakpoints */
         @media (max-width: 992px) {
             body {
-                padding-left: 20px !important;
-                padding-top: 70px !important;
+                padding: 70px 20px 40px 20px !important;
             }
             .cozy-sidebar {
                 transform: translateX(-280px);
@@ -505,9 +509,9 @@ const checkPageAuthorization = () => {
     }
 };
 
-// Execute shared initializer
-injectGlobalStyles();
+// Execute shared initializer on load
 document.addEventListener('DOMContentLoaded', () => {
+    injectGlobalStyles();
     injectSidebar();
     checkPageAuthorization();
 });
