@@ -359,24 +359,6 @@ const injectSidebar = () => {
                     </span>
                 </a>
                 
-                <a href="${basePath}pages/menu.html" class="nav-item ${currentPage === 'menu.html' ? 'active' : ''}">
-                    <span class="nav-item-content">
-                        <i class="ph-bold ph-book-open" style="color:#4A90E2"></i> Menu Publik
-                    </span>
-                </a>
-                
-                <a href="${basePath}pages/booking.html" class="nav-item ${currentPage === 'booking.html' ? 'active' : ''}">
-                    <span class="nav-item-content">
-                        <i class="ph-bold ph-ticket" style="color:#F4BA41"></i> Reservasi
-                    </span>
-                </a>
-                
-                <a href="${basePath}pages/booking-list.html" class="nav-item ${currentPage === 'booking-list.html' ? 'active' : ''}">
-                    <span class="nav-item-content">
-                        <i class="ph-bold ph-calendar-check" style="color:#5D8A56"></i> Antrean Publik
-                    </span>
-                </a>
-
                 <!-- Absensi (Level 1+) -->
                 ${createNavItem('attendance.html', 'ph-clock', '#D66D40', 'Absensi Kerja', activeRole.level, currentPage, basePath)}
                 
