@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <link rel="icon" href="../assets/logo.png" type="image/png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Velmont Resto | Admin — Daftar Booking</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        :root {
+            --bg-dark: #1E1512; --bg-warm: #3A261D; --panel-bg: #FDF8F5;
+            --panel-border: #4A332A; --panel-header: #4A332A; --text-main: #4A332A;
+            --text-muted: #9A7B6D; --accent-primary: #D66D40; --accent-shadow: #B25028;
+            --accent-yellow: #F4BA41; --accent-green: #5D8A56; --accent-blue: #4A90E2;
+            --input-bg: #FFFFFF; --input-border: #E8D8D0; --font-game: 'Nunito', sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: radial-gradient(circle at 50% 40%, var(--bg-warm) 0%, var(--bg-dark) 100%);
+            color: var(--text-main); font-family: var(--font-game); min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            position: relative; overflow: hidden; padding: 20px;
+        }
+        .particle { position:absolute; background:rgba(253,248,245,0.3); border-radius:50%; pointer-events:none; animation:floatUp infinite linear; }
+        @keyframes floatUp { 0%{transform:translateY(100vh) scale(0.5);opacity:0} 30%{opacity:0.6} 70%{opacity:0.6} 100%{transform:translateY(-10vh) scale(1.5);opacity:0} }
+        .p1{width:6px;height:6px;left:15%;animation-duration:14s}
+        .p2{width:10px;height:10px;left:35%;animation-duration:19s;animation-delay:4s}
+        .p3{width:5px;height:5px;left:65%;animation-duration:11s;animation-delay:2s}
+        .p4{width:12px;height:12px;left:82%;animation-duration:22s;animation-delay:7s;background:rgba(244,186,65,0.15)}
+        .p5{width:8px;height:8px;left:55%;animation-duration:16s;animation-delay:9s}
+
+        .game-window { width:100%; max-width:860px; animation:popIn 0.6s cubic-bezier(0.175,0.885,0.32,1.275) forwards; }
+        @keyframes popIn { 0%{transform:scale(0.85) translateY(30px);opacity:0} 100%{transform:scale(1) translateY(0);opacity:1} }
+
+        .game-ui-card { background-color:var(--panel-bg); border:4px solid var(--panel-border); border-radius:24px; box-shadow:0 10px 0 var(--panel-border),0 20px 30px rgba(0,0,0,0.5); display:flex; flex-direction:column; overflow:hidden; }
+        .window-header { background-color:var(--panel-header); padding:12px 20px; display:flex; justify-content:space-between; align-items:center; border-bottom:4px solid var(--panel-border); }
+        .window-dots { display:flex; gap:6px; }
+        .dot { width:12px; height:12px; border-radius:50%; background-color:var(--panel-bg); opacity:0.5; border:2px solid rgba(0,0,0,0.2); }
+        .dot:nth-child(1){background-color:#FF5F56;opacity:1}
+        .dot:nth-child(2){background-color:#FFBD2E;opacity:1}
+        .dot:nth-child(3){background-color:#27C93F;opacity:1}
+        .window-title { color:var(--panel-bg); font-size:0.8rem; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; }
+
+        .card-body { padding:2rem; display:flex; flex-direction:column; height:85vh; max-height:750px; overflow-y:auto; }
+        .card-body::-webkit-scrollbar{width:8px} .card-body::-webkit-scrollbar-thumb{background:var(--input-border);border-radius:10px}
+
+        .page-title { font-size:1.8rem; font-weight:900; color:var(--text-main); margin-bottom:1rem; display:flex; align-items:center; gap:10px; }
+
+        .tester-bar { background:#FFF9C4; border:3px solid var(--accent-yellow); border-radius:16px; padding:12px 16px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; gap:15px; flex-wrap:wrap; }
+        .tester-title { font-size:0.85rem; font-weight:900; color:var(--panel-border); text-transform:uppercase; display:flex; align-items:center; gap:6px; }
+
+        .forbidden-overlay { display:none; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:50px 20px; background:rgba(253,248,245,0.95); border-radius:20px; border:3px dashed #E74C3C; margin:20px 0; flex-grow:1; }
+
+        /* Summary Stats */
+        .stats-row { display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap; }
+        .stat-card { flex:1; min-width:140px; background:var(--input-bg); border:3px solid var(--input-border); border-radius:14px; padding:14px; display:flex; flex-direction:column; gap:4px; }
+        .stat-label { font-size:0.7rem; font-weight:900; text-transform:uppercase; color:var(--text-muted); }
+        .stat-value { font-size:1.6rem; font-weight:900; }
+        .stat-pending  { border-color:var(--accent-yellow); color:var(--accent-yellow); }
+        .stat-approved { border-color:var(--accent-green);  color:var(--accent-green);  }
+        .stat-rejected { border-color:#E74C3C; color:#E74C3C; }
+
+        /* Booking Cards */
+        .list-container { display:flex; flex-direction:column; gap:12px; flex-grow:1; }
+        .booking-card { background:var(--input-bg); border:3px solid var(--input-border); border-radius:16px; padding:16px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; transition:border-color 0.2s; }
+        .booking-card:hover { border-color:var(--accent-primary); }
+        .booking-card.is-pending  { border-left:6px solid var(--accent-yellow); }
+        .booking-card.is-approved { border-left:6px solid var(--accent-green);  }
+        .booking-card.is-rejected { border-left:6px solid #E74C3C; opacity:0.7; }
+
+        .bk-info { flex:1; }
+        .bk-name { font-weight:900; font-size:1.05rem; color:var(--text-main); margin-bottom:4px; }
+        .bk-meta { font-size:0.8rem; color:var(--text-muted); font-weight:700; display:flex; gap:10px; flex-wrap:wrap; }
+
+        .badge-status { font-size:0.7rem; font-weight:900; padding:3px 10px; border-radius:8px; text-transform:uppercase; border:1.5px solid; }
+        .b-pending  { background:#FFF9C4; color:#A0720E; border-color:var(--accent-yellow); }
+        .b-approved { background:#E8F5E9; color:var(--accent-green); border-color:var(--accent-green); }
+        .b-rejected { background:#FDEDEC; color:#E74C3C; border-color:#E74C3C; }
+        .b-venue    { background:#EEF2FF; color:#5C6BC0; border-color:#7986CB; }
+        .b-katering { background:#FFF3E0; color:var(--accent-primary); border-color:var(--accent-primary); }
+
+        .bk-actions { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+
+        .btn-approve { background:var(--accent-green); color:white; border:2px solid var(--panel-border); border-radius:10px; padding:7px 14px; font-family:var(--font-game); font-weight:900; font-size:0.8rem; cursor:pointer; display:flex; align-items:center; gap:4px; }
+        .btn-approve:hover { background:#4A7A44; }
+        .btn-reject  { background:#E74C3C; color:white; border:2px solid var(--panel-border); border-radius:10px; padding:7px 14px; font-family:var(--font-game); font-weight:900; font-size:0.8rem; cursor:pointer; display:flex; align-items:center; gap:4px; }
+        .btn-reject:hover { background:#C0392B; }
+
+        .bottom-actions { margin-top:auto; padding-top:1.5rem; border-top:3px dashed var(--input-border); display:flex; justify-content:space-between; align-items:center; }
+        .back-link { display:inline-flex; align-items:center; gap:6px; color:var(--text-muted); text-decoration:none; font-size:0.9rem; font-weight:800; }
+        .back-link:hover{color:var(--accent-primary)}
+
+        .empty-state { display:none; flex-direction:column; align-items:center; justify-content:center; padding:60px 20px; color:var(--text-muted); opacity:0.7; }
+    </style>
+</head>
+<body>
+
+    <div class="particle p1"></div><div class="particle p2"></div>
+    <div class="particle p3"></div><div class="particle p4"></div><div class="particle p5"></div>
+
+    <div class="game-window">
+        <div class="game-ui-card">
+
+            <div class="window-header">
+                <div class="window-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                <div class="window-title">Admin_Booking_List.exe</div>
+                <div class="window-dots" style="visibility:hidden"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+            </div>
+
+            <div class="card-body">
+
+                <!-- Simulator Bar -->
+                <div class="tester-bar">
+                    <div class="tester-title"><i class="ph-bold ph-shield-check"></i> SIMULATOR HAK AKSES PENGGUNA (ROLE MATRIX)</div>
+                    <div>
+                        <select id="role-selector" onchange="changeRole()" style="padding:6px 12px;font-family:var(--font-game);font-weight:800;border-radius:8px;border:2px solid var(--panel-border)">
+                            <option value="chef">Chef (Lvl 1) - Terlarang</option>
+                            <option value="svp" selected>Kael Percival (SVP - Lvl 4) - Bisa Approve</option>
+                            <option value="manager">Valerie Swan (Manajer - Lvl 5) - Bisa Approve</option>
+                            <option value="ceo">Moza Leonardo (CEO - Lvl 6) - Bisa Approve</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Forbidden Panel -->
+                <div class="forbidden-overlay" id="forbidden-panel">
+                    <i class="ph-bold ph-lock-key" style="font-size:5rem;color:#E74C3C;margin-bottom:20px"></i>
+                    <h2 style="color:#C0392B;font-weight:900;margin-bottom:12px">Akses Ditolak (403 Forbidden)</h2>
+                    <p style="color:var(--text-main);font-weight:700;font-size:1.1rem;max-width:500px;margin:0 auto">Halaman persetujuan booking hanya untuk SVP, Manajer &amp; CEO (Level 4+).</p>
+                </div>
+
+                <!-- Main Content -->
+                <div id="main-content" style="display:flex;flex-direction:column;flex-grow:1">
+                    <h1 class="page-title"><i class="ph-fill ph-calendar-check" style="color:var(--accent-primary)"></i> Kelola Daftar Booking</h1>
+
+                    <!-- Stats -->
+                    <div class="stats-row">
+                        <div class="stat-card">
+                            <span class="stat-label">Total Booking</span>
+                            <span class="stat-value" id="stat-total">0</span>
+                        </div>
+                        <div class="stat-card stat-pending">
+                            <span class="stat-label">Menunggu</span>
+                            <span class="stat-value" id="stat-pending">0</span>
+                        </div>
+                        <div class="stat-card stat-approved">
+                            <span class="stat-label">Disetujui</span>
+                            <span class="stat-value" id="stat-approved">0</span>
+                        </div>
+                        <div class="stat-card stat-rejected">
+                            <span class="stat-label">Ditolak</span>
+                            <span class="stat-value" id="stat-rejected">0</span>
+                        </div>
+                    </div>
+
+                    <!-- List -->
+                    <div class="list-container" id="list-container"></div>
+                    <div class="empty-state" id="empty-state">
+                        <i class="ph-light ph-ghost" style="font-size:4rem;margin-bottom:10px"></i>
+                        <h3>Jadwal Kosong</h3>
+                        <p>Belum ada booking yang terdaftar.</p>
+                    </div>
+                </div>
+
+                <div class="bottom-actions">
+                    <a href="dashboard.html" class="back-link"><i class="ph-bold ph-arrow-left"></i> Kembali ke Dashboard</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const defaultBookings = [
+            { id: "1", name: "Gathering Dinas Pariwisata",   type: "venue",    date: "10 Jun 2026", pax: "-",    details: "Private Event (Tertutup)", status: "approved" },
+            { id: "2", name: "Pesanan Katering: Bpk. Leonardo", type: "katering", date: "15 Jun 2026", pax: "50 Pax", details: "Makan siang kantor", status: "approved" },
+            { id: "3", name: "Pesanan Katering: Kak Sarah",  type: "katering", date: "20 Jun 2026", pax: "150 Pax", details: "Pesta ulang tahun",    status: "pending"  },
+            { id: "4", name: "Venue Pernikahan Hendro",       type: "venue",    date: "25 Jun 2026", pax: "200 Pax", details: "Full gedung outdoor",  status: "pending"  },
+            { id: "5", name: "Katering Reuni SMA",            type: "katering", date: "28 Jun 2026", pax: "80 Pax", details: "Standing party",        status: "rejected" }
+        ];
+
+        let bookingsData = JSON.parse(localStorage.getItem('velmont_bookings'));
+        if (!bookingsData) {
+            bookingsData = defaultBookings;
+            localStorage.setItem('velmont_bookings', JSON.stringify(bookingsData));
+        }
+
+        let activeRole = "svp";
+
+        function changeRole() {
+            activeRole = document.getElementById("role-selector").value;
+            const hasAccess = activeRole === "svp" || activeRole === "manager" || activeRole === "ceo";
+            document.getElementById("forbidden-panel").style.display = hasAccess ? "none"  : "flex";
+            document.getElementById("main-content").style.display    = hasAccess ? "flex"  : "none";
+            if (hasAccess) renderBookings();
+        }
+
+        function updateStats() {
+            document.getElementById("stat-total").innerText    = bookingsData.length;
+            document.getElementById("stat-pending").innerText  = bookingsData.filter(b => b.status === "pending").length;
+            document.getElementById("stat-approved").innerText = bookingsData.filter(b => b.status === "approved").length;
+            document.getElementById("stat-rejected").innerText = bookingsData.filter(b => b.status === "rejected").length;
+        }
+
+        function renderBookings() {
+            const container  = document.getElementById("list-container");
+            const emptyState = document.getElementById("empty-state");
+            container.innerHTML = "";
+
+            updateStats();
+
+            if (bookingsData.length === 0) { emptyState.style.display = "flex"; return; }
+            emptyState.style.display = "none";
+
+            const sorted = [...bookingsData].sort(a => a.status === "pending" ? -1 : 1);
+
+            sorted.forEach(b => {
+                const card = document.createElement("div");
+                card.className = `booking-card is-${b.status}`;
+
+                const typeBadge   = b.type === "katering"
+                    ? `<span class="badge-status b-katering">Katering</span>`
+                    : `<span class="badge-status b-venue">Venue</span>`;
+                const statusBadge = b.status === "pending"
+                    ? `<span class="badge-status b-pending">Menunggu</span>`
+                    : b.status === "approved"
+                        ? `<span class="badge-status b-approved">Disetujui</span>`
+                        : `<span class="badge-status b-rejected">Ditolak</span>`;
+
+                let actionHtml = "";
+                if (b.status === "pending") {
+                    actionHtml = `
+                        <button class="btn-approve" onclick="updateStatus('${b.id}','approved')"><i class="ph-bold ph-check"></i> Setujui</button>
+                        <button class="btn-reject"  onclick="updateStatus('${b.id}','rejected')"><i class="ph-bold ph-x"></i> Tolak</button>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="bk-info">
+                        <div class="bk-name">${b.name}</div>
+                        <div class="bk-meta">
+                            <span><i class="ph-bold ph-calendar"></i> ${b.date}</span>
+                            <span><i class="ph-bold ph-users"></i> ${b.pax || "-"}</span>
+                            <span>${b.details}</span>
+                        </div>
+                    </div>
+                    <div class="bk-actions">
+                        ${typeBadge}
+                        ${statusBadge}
+                        ${actionHtml}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function updateStatus(id, newStatus) {
+            const idx = bookingsData.findIndex(b => b.id === id);
+            if (idx !== -1) {
+                bookingsData[idx].status = newStatus;
+                localStorage.setItem('velmont_bookings', JSON.stringify(bookingsData));
+                renderBookings();
+            }
+        }
+
+        changeRole();
+    </script>
+</body>
+</html>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+      <link rel="icon" href="../assets/logo.png" type="image/png">
+<meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Velmont Resto — Loading System</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0F0A07;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+
+    /* ── Keyframes ── */
+    @keyframes steam1 {
+      0%, 100% { opacity: 0; transform: translateY(0) scaleX(1); }
+      50%       { opacity: .7; transform: translateY(-18px) scaleX(1.3); }
+    }
+    @keyframes steam2 {
+      0%, 100% { opacity: 0; transform: translateY(0) scaleX(1); }
+      50%       { opacity: .5; transform: translateY(-22px) scaleX(.8); }
+    }
+    @keyframes steam3 {
+      0%, 100% { opacity: 0; transform: translateY(0) scaleX(1); }
+      50%       { opacity: .6; transform: translateY(-16px) scaleX(1.1); }
+    }
+    @keyframes shadowPulse {
+      0%, 100% { transform: scaleX(1);   opacity: .25; }
+      50%       { transform: scaleX(.6); opacity: .1;  }
+    }
+    @keyframes dotBounce {
+      0%, 80%, 100% { transform: translateY(0); }
+      40%           { transform: translateY(-10px); }
+    }
+    @keyframes rotateSaucer {
+      0%   { transform: rotate(-2deg); }
+      50%  { transform: rotate(2deg);  }
+      100% { transform: rotate(-2deg); }
+    }
+    @keyframes progressBar {
+      from { width: 0%; }
+      to   { width: 100%; }
+    }
+    @keyframes shimmer {
+      0%   { background-position: -400px 0; }
+      100% { background-position:  400px 0; }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0);    }
+    }
+
+    /* ── Card ── */
+    .wrap {
+      width: 420px;
+      min-height: 480px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #1E1410;
+      border-radius: 24px;
+      border: 4px solid #4A332A;
+      box-shadow: 0 10px 0 #4A332A, 0 20px 30px rgba(0, 0, 0, 0.5);
+      padding: 3rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Decorative background circles */
+    .bg-circle {
+      position: absolute;
+      border-radius: 50%;
+      background: #2C1A0E;
+      pointer-events: none;
+    }
+    .bg-circle-1 { width: 320px; height: 320px; top: -80px;  left: -60px;  opacity: .6; }
+    .bg-circle-2 { width: 200px; height: 200px; bottom: -60px; right: -40px; opacity: .4; }
+
+    /* ── Cup scene ── */
+    .scene {
+      position: relative;
+      width: 160px;
+      height: 160px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      animation: fadeInUp .6s ease both;
+    }
+
+    .steam-wrap {
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 50px;
+      margin-bottom: -6px;
+    }
+    .steam-path {
+      fill: none;
+      stroke: #D66D40;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      opacity: 0;
+    }
+    .s1 { animation: steam1 2.2s ease-in-out infinite 0.0s; }
+    .s2 { animation: steam2 2.2s ease-in-out infinite 0.5s; }
+    .s3 { animation: steam3 2.2s ease-in-out infinite 1.0s; }
+
+    .saucer-group {
+      position: absolute;
+      bottom: 0;
+      width: 110px;
+      animation: rotateSaucer 3s ease-in-out infinite;
+      transform-origin: center bottom;
+    }
+
+    .cup-group {
+      position: absolute;
+      bottom: 22px;
+      width: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .shadow {
+      width: 90px;
+      height: 12px;
+      background: rgba(0, 0, 0, .4);
+      border-radius: 50%;
+      margin-top: 8px;
+      animation: shadowPulse 2.2s ease-in-out infinite;
+    }
+
+    /* ── Info block ── */
+    .info {
+      margin-top: 2rem;
+      text-align: center;
+      animation: fadeInUp .8s ease .3s both;
+    }
+
+    .brand {
+      font-size: 24px;
+      font-weight: 900;
+      color: #F5DEC8;
+      letter-spacing: 1.5px;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    .sub {
+      font-size: 13px;
+      color: #9C6E4A;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Progress bar */
+    .progress-track {
+      width: 220px;
+      height: 6px;
+      background: #2C1A0E;
+      border: 1px solid #4A332A;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 0 auto 1rem;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #D66D40, #F4BA41, #D66D40);
+      background-size: 400px 100%;
+      width: 0%;
+      animation:
+        progressBar 2.5s cubic-bezier(.4, 0, .2, 1) forwards,
+        shimmer     1.5s linear infinite;
+    }
+
+    /* Bouncing dots */
+    .dots {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      margin-top: .5rem;
+    }
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #D66D40;
+    }
+    .dot:nth-child(1) { animation: dotBounce 1.2s ease-in-out infinite 0.0s; }
+    .dot:nth-child(2) { animation: dotBounce 1.2s ease-in-out infinite 0.2s; }
+    .dot:nth-child(3) { animation: dotBounce 1.2s ease-in-out infinite 0.4s; }
+
+    /* Tag pills */
+    .tag-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 1.4rem;
+      animation: fadeInUp .8s ease .6s both;
+      opacity: 0;
+      animation-fill-mode: forwards;
+    }
+    .tag {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 999px;
+      border: 1.5px solid #4A332A;
+      color: #F5DEC8;
+      background: #3A261D;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrap">
+    <div class="bg-circle bg-circle-1"></div>
+    <div class="bg-circle bg-circle-2"></div>
+
+    <!-- Cup scene -->
+    <div class="scene">
+
+      <!-- Steam -->
+      <div class="steam-wrap">
+        <svg width="60" height="50" viewBox="0 0 60 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path class="steam-path s1" d="M15 45 Q10 35 15 25 Q20 15 15 5"/>
+          <path class="steam-path s2" d="M30 45 Q25 35 30 25 Q35 15 30 5"/>
+          <path class="steam-path s3" d="M45 45 Q40 35 45 25 Q50 15 45 5"/>
+        </svg>
+      </div>
+
+      <!-- Saucer -->
+      <div class="saucer-group">
+        <svg width="110" height="28" viewBox="0 0 110 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="55" cy="14" rx="52" ry="10" fill="#3A1F0D" stroke="#5A3020" stroke-width="1"/>
+          <ellipse cx="55" cy="12" rx="44" ry="7"  fill="#2C1508" stroke="#4A2818" stroke-width="0.5"/>
+          <ellipse cx="55" cy="11" rx="24" ry="4"  fill="#3A1F0D"/>
+        </svg>
+      </div>
+
+      <!-- Cup -->
+      <div class="cup-group">
+        <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Cup body outer -->
+          <path d="M12 20 L18 72 Q18 76 22 76 L58 76 Q62 76 62 72 L68 20 Z"
+                fill="#3A1F0D" stroke="#5A3020" stroke-width="1"/>
+          <!-- Cup body inner -->
+          <path d="M14 20 L20 70 Q20 73 23 73 L57 73 Q60 73 60 70 L66 20 Z"
+                fill="#2A1508"/>
+          <!-- Liquid fill (animated) -->
+          <rect x="16" y="62" width="48" height="0" rx="2" fill="#D66D40">
+            <animate attributeName="height" from="0"  to="28"  dur="2s" fill="freeze" begin="0.5s"/>
+            <animate attributeName="y"      from="62" to="34"  dur="2s" fill="freeze" begin="0.5s"/>
+          </rect>
+          <!-- Cup rim top -->
+          <ellipse cx="40" cy="20" rx="28" ry="7" fill="#4A2818" stroke="#5A3020" stroke-width="0.5"/>
+          <ellipse cx="40" cy="20" rx="22" ry="5" fill="#3A1A0A"/>
+          <!-- Handle -->
+          <path d="M62 32 Q76 32 76 44 Q76 56 62 56"
+                fill="none" stroke="#5A3020" stroke-width="4" stroke-linecap="round"/>
+          <path d="M62 36 Q72 36 72 44 Q72 52 62 52"
+                fill="none" stroke="#3A1F0D" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- Liquid shine -->
+          <ellipse cx="40" cy="34" rx="20" ry="4" fill="#F4BA41" opacity=".3"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Shadow -->
+    <div class="shadow"></div>
+
+    <!-- Text & progress -->
+    <div class="info">
+      <div class="brand">Velmont Resto</div>
+      <div class="sub">Menyiapkan shift kerja terbaikmu...</div>
+
+      <div class="progress-track">
+        <div class="progress-fill"></div>
+      </div>
+
+      <div class="dots">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+    </div>
+
+    <!-- Tag pills -->
+    <div class="tag-row">
+      <div class="tag">Lakehouse</div>
+      <div class="tag">Seaside</div>
+      <div class="tag">Est. 2026</div>
+    </div>
+  </div>
+
+  <script>
+    // Automatic transition to dashboard after progress bar completes
+    setTimeout(() => {
+      window.location.href = './dashboard.html';
+    }, 2500);
+  </script>
+</body>
+</html>

@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Velmont Resto | Jadwal Event & Katering</title>
+    
+    <!-- Google Fonts: Nunito -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        /* Cozy Game UI Variables - Neat & Polished */
+        :root {
+            --bg-dark: #1E1512;       
+            --bg-warm: #3A261D;       
+            --panel-bg: #FDF8F5;      
+            --panel-border: #4A332A;  
+            --panel-header: #4A332A;  
+            --text-main: #4A332A;
+            --text-muted: #9A7B6D;
+            --accent-primary: #D66D40; 
+            --accent-shadow: #B25028;  
+            --accent-yellow: #F4BA41;  
+            --accent-green: #5D8A56;   
+            --input-bg: #FFFFFF;
+            --input-border: #E8D8D0;
+            --font-game: 'Nunito', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: radial-gradient(circle at 50% 40%, var(--bg-warm) 0%, var(--bg-dark) 100%);
+            color: var(--text-main);
+            font-family: var(--font-game);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        /* Ambient Floating Particles */
+        .particle {
+            position: absolute;
+            background: rgba(253, 248, 245, 0.3);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: floatUp infinite linear;
+        }
+        
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            30% { opacity: 0.6; }
+            70% { opacity: 0.6; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+
+        .p1 { width: 6px; height: 6px; left: 15%; animation-duration: 14s; animation-delay: 0s; }
+        .p2 { width: 10px; height: 10px; left: 35%; animation-duration: 19s; animation-delay: 4s; }
+        .p3 { width: 5px; height: 5px; left: 65%; animation-duration: 11s; animation-delay: 2s; }
+        .p4 { width: 12px; height: 12px; left: 82%; animation-duration: 22s; animation-delay: 7s; background: rgba(244, 186, 65, 0.15); }
+        .p5 { width: 8px; height: 8px; left: 55%; animation-duration: 16s; animation-delay: 9s; }
+
+        /* Game Dialog Window wrapper (Wider for List) */
+        .game-window {
+            width: 100%;
+            max-width: 800px;
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.85) translateY(30px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        /* The actual card */
+        .game-ui-card {
+            background-color: var(--panel-bg);
+            border: 4px solid var(--panel-border);
+            border-radius: 24px;
+            box-shadow: 0 10px 0 var(--panel-border), 0 20px 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Game Window Header Bar */
+        .window-header {
+            background-color: var(--panel-header);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid var(--panel-border);
+        }
+
+        .window-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--panel-bg);
+            opacity: 0.5;
+            border: 2px solid rgba(0,0,0,0.2);
+        }
+        .dot:nth-child(1) { background-color: #FF5F56; opacity: 1;}
+        .dot:nth-child(2) { background-color: #FFBD2E; opacity: 1;}
+        .dot:nth-child(3) { background-color: #27C93F; opacity: 1;}
+
+        .window-title {
+            color: var(--panel-bg);
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        /* Card Content Area */
+        .card-body {
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            height: 80vh;
+            max-height: 700px;
+        }
+
+        /* Custom Scrollbar */
+        .list-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        .list-container::-webkit-scrollbar { width: 8px; }
+        .list-container::-webkit-scrollbar-track { background: transparent; }
+        .list-container::-webkit-scrollbar-thumb { background: var(--input-border); border-radius: 10px; }
+        .list-container::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        /* Menu Header (Title & Categories) */
+        .menu-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .brand-title {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--text-main);
+            letter-spacing: 0.5px;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Categories / Tabs */
+        .category-tabs {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            background: var(--input-border);
+            padding: 6px;
+            border-radius: 24px;
+            border: 3px solid var(--panel-border);
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-family: var(--font-game);
+            font-weight: 900;
+            font-size: 0.95rem;
+            padding: 8px 24px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tab-btn:hover { color: var(--text-main); }
+        .tab-btn.active {
+            background: var(--panel-bg);
+            color: var(--accent-primary);
+            box-shadow: 0 3px 0 rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+            border: 2px solid var(--panel-border);
+        }
+
+        /* Booking Item Ticket/Card (Public View) */
+        .booking-ticket {
+            background: var(--input-bg);
+            border: 3px solid var(--input-border);
+            border-radius: 20px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.02);
+            gap: 15px;
+        }
+
+        .booking-ticket:hover {
+            border-color: var(--panel-border);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 rgba(74, 51, 42, 0.1);
+        }
+
+        .ticket-info {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .ticket-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+        }
+
+        .ticket-badge {
+            font-size: 0.7rem;
+            font-weight: 900;
+            padding: 4px 10px;
+            border-radius: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 2px solid;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .badge-katering {
+            background: #FFF3E0;
+            color: var(--accent-primary);
+            border-color: var(--accent-primary);
+        }
+
+        .badge-venue {
+            background: #E8F5E9;
+            color: var(--accent-green);
+            border-color: var(--accent-green);
+        }
+
+        .ticket-date {
+            font-size: 0.85rem;
+            color: var(--text-main);
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--input-border);
+            padding: 4px 10px;
+            border-radius: 8px;
+        }
+
+        .ticket-name {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .ticket-details {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Status Badge (Right side indicator) */
+        .status-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #FDF8F5;
+            border: 2px dashed var(--input-border);
+            border-radius: 16px;
+            padding: 10px 16px;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .status-icon {
+            font-size: 1.5rem;
+            margin-bottom: 4px;
+        }
+
+        .status-text {
+            font-size: 0.75rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .booked { color: var(--accent-green); }
+        .pending { color: var(--accent-primary); }
+
+        /* Bottom Action Bar */
+        .bottom-actions {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 3px dashed var(--input-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 800;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover { color: var(--accent-primary); }
+
+        .btn-new {
+            padding: 10px 20px;
+            background: var(--accent-yellow);
+            color: var(--panel-border);
+            font-weight: 900;
+            font-size: 0.95rem;
+            font-family: var(--font-game);
+            border: 3px solid var(--panel-border);
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 0 var(--panel-border);
+            transition: all 0.1s ease;
+            text-decoration: none;
+        }
+
+        .btn-new:active {
+            transform: translateY(4px);
+            box-shadow: 0 0px 0 var(--panel-border);
+        }
+
+        /* Empty State */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-muted);
+            opacity: 0.7;
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .booking-ticket { flex-direction: column; align-items: stretch; }
+            .status-indicator { margin-top: 10px; flex-direction: row; gap: 8px; justify-content: flex-start; padding: 8px 12px; }
+            .status-icon { margin-bottom: 0; font-size: 1.2rem; }
+            .card-body { padding: 1.5rem; }
+            .brand-title { font-size: 1.4rem; }
+            .category-tabs { flex-wrap: wrap; }
+            .tab-btn { padding: 8px 12px; font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ambient Floating Particles -->
+    <div class="particle p1"></div>
+    <div class="particle p2"></div>
+    <div class="particle p3"></div>
+    <div class="particle p4"></div>
+    <div class="particle p5"></div>
+
+    <!-- Main Wrapper -->
+    <div class="game-window">
+        <div class="game-ui-card">
+            
+            <!-- Window Style Header -->
+            <div class="window-header">
+                <div class="window-dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+                <div class="window-title">Velmont_Schedule.exe</div>
+                <div class="window-dots" style="visibility: hidden;">
+                    <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                </div>
+            </div>
+
+            <!-- Card Content -->
+            <div class="card-body">
+                
+                <div class="menu-header">
+                    <h1 class="brand-title"><i class="ph-fill ph-calendar-check" style="color: var(--accent-primary);"></i> JADWAL ACARA</h1>
+                    <p class="brand-subtitle">Cek jadwal event dan katering yang sudah terpesan di Velmont.</p>
+                    
+                    <!-- Filters Tabs -->
+                    <div class="category-tabs">
+                        <button class="tab-btn active" onclick="filterList('all', this)">
+                            <i class="ph-bold ph-squares-four"></i> Semua Jadwal
+                        </button>
+                        <button class="tab-btn" onclick="filterList('katering', this)">
+                            <i class="ph-bold ph-package"></i> Katering
+                        </button>
+                        <button class="tab-btn" onclick="filterList('venue', this)">
+                            <i class="ph-bold ph-map-pin"></i> Event Venue
+                        </button>
+                    </div>
+                </div>
+
+                <!-- List Container -->
+                <div class="list-container" id="list-container">
+                    
+                    <!-- Item 1: Venue -->
+                    <div class="booking-ticket" data-type="venue">
+                        <div class="ticket-info">
+                            <div class="ticket-header">
+                                <span class="ticket-badge badge-venue"><i class="ph-bold ph-map-pin"></i> Venue</span>
+                                <span class="ticket-date"><i class="ph-bold ph-calendar-blank"></i> 10 Jun 2026</span>
+                            </div>
+                            <div class="ticket-name">Gathering Dinas Pariwisata</div>
+                            <div class="ticket-details">
+                                <div class="detail-item"><i class="ph-bold ph-clock"></i> 09:00 - 15:00 WIB</div>
+                                <div class="detail-item"><i class="ph-bold ph-users"></i> Private Event (Tertutup)</div>
+                            </div>
+                        </div>
+                        <div class="status-indicator booked">
+                            <i class="ph-fill ph-lock-key status-icon"></i>
+                            <span class="status-text">Booked</span>
+                        </div>
+                    </div>
+
+                    <!-- Item 2: Katering -->
+                    <div class="booking-ticket" data-type="katering">
+                        <div class="ticket-info">
+                            <div class="ticket-header">
+                                <span class="ticket-badge badge-katering"><i class="ph-bold ph-package"></i> Katering</span>
+                                <span class="ticket-date"><i class="ph-bold ph-calendar-blank"></i> 15 Jun 2026</span>
+                            </div>
+                            <div class="ticket-name">Pesanan Katering: Bpk. Leonardo</div>
+                            <div class="ticket-details">
+                                <div class="detail-item"><i class="ph-bold ph-map-trifold"></i> Dikirim ke lokasi pemesan</div>
+                                <div class="detail-item"><i class="ph-bold ph-users"></i> 50 Pax</div>
+                            </div>
+                        </div>
+                        <div class="status-indicator booked">
+                            <i class="ph-fill ph-check-circle status-icon"></i>
+                            <span class="status-text">Terjadwal</span>
+                        </div>
+                    </div>
+
+                    <!-- Item 3: Katering (Pending/Menunggu Konfirmasi) -->
+                    <div class="booking-ticket" data-type="katering">
+                        <div class="ticket-info">
+                            <div class="ticket-header">
+                                <span class="ticket-badge badge-katering"><i class="ph-bold ph-package"></i> Katering</span>
+                                <span class="ticket-date"><i class="ph-bold ph-calendar-blank"></i> 20 Jun 2026</span>
+                            </div>
+                            <div class="ticket-name">Pesanan Katering: Kak Sarah</div>
+                            <div class="ticket-details">
+                                <div class="detail-item"><i class="ph-bold ph-map-trifold"></i> Dikirim ke lokasi pemesan</div>
+                                <div class="detail-item"><i class="ph-bold ph-users"></i> 150 Pax</div>
+                            </div>
+                        </div>
+                        <div class="status-indicator pending">
+                            <i class="ph-fill ph-hourglass-high status-icon"></i>
+                            <span class="status-text">Menunggu</span>
+                        </div>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div class="empty-state" id="empty-state">
+                        <i class="ph-light ph-ghost" style="font-size: 4rem; margin-bottom: 10px;"></i>
+                        <h3>Jadwal Kosong</h3>
+                        <p>Belum ada acara yang terjadwal di kategori ini.</p>
+                    </div>
+
+                </div>
+
+                <!-- Bottom Actions -->
+                <div class="bottom-actions">
+                    <a href="../index.html" class="back-link">
+                        <i class="ph-bold ph-arrow-left"></i> Kembali ke Beranda
+                    </a>
+                    <a href="booking.html" class="btn-new">
+                        <i class="ph-bold ph-calendar-plus"></i> Pesan Jadwalmu
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Filter functionality
+        function filterList(type, btnElement) {
+            // Update Active Tab
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+
+            // Filter Items
+            const items = document.querySelectorAll('.booking-ticket');
+            let visibleCount = 0;
+
+            items.forEach(item => {
+                if (type === 'all' || item.dataset.type === type) {
+                    item.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            // Show empty state if needed
+            const emptyState = document.getElementById('empty-state');
+            if (visibleCount === 0) {
+                emptyState.style.display = 'flex';
+            } else {
+                emptyState.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

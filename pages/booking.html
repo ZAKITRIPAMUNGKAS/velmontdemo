@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Velmont Resto | Inden Katering & Venue</title>
+    
+    <!-- Google Fonts: Nunito -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        /* Cozy Game UI Variables - Neat & Polished */
+        :root {
+            /* Background Atmosphere */
+            --bg-dark: #1E1512;       /* Deep coffee black */
+            --bg-warm: #3A261D;       /* Warm roasted brown */
+            
+            /* Game UI Panel */
+            --panel-bg: #FDF8F5;      /* Warm milky cream */
+            --panel-border: #4A332A;  /* Solid chocolate */
+            --panel-header: #4A332A;  /* Match border for header */
+            
+            /* Text & Accents */
+            --text-main: #4A332A;
+            --text-muted: #9A7B6D;
+            --accent-primary: #D66D40; /* Cozy terracotta / baked clay */
+            --accent-shadow: #B25028;  /* Darker terracotta for 3D */
+            --accent-yellow: #F4BA41;  /* Soft star yellow */
+            --accent-green: #5D8A56;   /* Matcha green for variations */
+            
+            /* Inputs & Cards */
+            --input-bg: #FFFFFF;
+            --input-border: #E8D8D0;
+            
+            --font-game: 'Nunito', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: radial-gradient(circle at 50% 40%, var(--bg-warm) 0%, var(--bg-dark) 100%);
+            color: var(--text-main);
+            font-family: var(--font-game);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        /* Ambient Floating Particles */
+        .particle {
+            position: absolute;
+            background: rgba(253, 248, 245, 0.3);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: floatUp infinite linear;
+        }
+        
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            30% { opacity: 0.6; }
+            70% { opacity: 0.6; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+
+        .p1 { width: 6px; height: 6px; left: 15%; animation-duration: 14s; animation-delay: 0s; }
+        .p2 { width: 10px; height: 10px; left: 35%; animation-duration: 19s; animation-delay: 4s; }
+        .p3 { width: 5px; height: 5px; left: 65%; animation-duration: 11s; animation-delay: 2s; }
+        .p4 { width: 12px; height: 12px; left: 82%; animation-duration: 22s; animation-delay: 7s; background: rgba(244, 186, 65, 0.15); }
+        .p5 { width: 8px; height: 8px; left: 55%; animation-duration: 16s; animation-delay: 9s; }
+
+        /* Game Dialog Window wrapper */
+        .game-window {
+            width: 100%;
+            max-width: 600px;
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.85) translateY(30px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        /* The actual card */
+        .game-ui-card {
+            background-color: var(--panel-bg);
+            border: 4px solid var(--panel-border);
+            border-radius: 24px;
+            box-shadow: 0 10px 0 var(--panel-border), 0 20px 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Game Window Header Bar */
+        .window-header {
+            background-color: var(--panel-header);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid var(--panel-border);
+        }
+
+        .window-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--panel-bg);
+            opacity: 0.5;
+            border: 2px solid rgba(0,0,0,0.2);
+        }
+        .dot:nth-child(1) { background-color: #FF5F56; opacity: 1;}
+        .dot:nth-child(2) { background-color: #FFBD2E; opacity: 1;}
+        .dot:nth-child(3) { background-color: #27C93F; opacity: 1;}
+
+        .window-title {
+            color: var(--panel-bg);
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        /* Card Content Area */
+        .card-body {
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        /* Custom Scrollbar */
+        .card-body::-webkit-scrollbar { width: 8px; }
+        .card-body::-webkit-scrollbar-track { background: transparent; }
+        .card-body::-webkit-scrollbar-thumb { background: var(--input-border); border-radius: 10px; }
+        .card-body::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        /* Menu Header (Title & Categories) */
+        .menu-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .brand-title {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--text-main);
+            letter-spacing: 0.5px;
+            line-height: 1;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Categories / Tabs */
+        .category-tabs {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            background: var(--input-border);
+            padding: 6px;
+            border-radius: 24px;
+            border: 3px solid var(--panel-border);
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-family: var(--font-game);
+            font-weight: 900;
+            font-size: 0.95rem;
+            padding: 8px 24px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-main);
+        }
+
+        .tab-btn.active {
+            background: var(--panel-bg);
+            color: var(--accent-primary);
+            box-shadow: 0 3px 0 rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+            border: 2px solid var(--panel-border);
+        }
+
+        /* Form Grid Layout */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        /* Input Fields */
+        .form-group {
+            text-align: left;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 0.4rem;
+            padding-left: 4px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            z-index: 2;
+            transition: color 0.2s;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            background: var(--input-bg);
+            border: 3px solid var(--input-border);
+            border-radius: 16px;
+            color: var(--text-main);
+            font-family: var(--font-game);
+            font-size: 0.95rem;
+            font-weight: 700;
+            outline: none;
+            transition: all 0.2s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        /* Specifically for number/date inputs to align better */
+        .form-group input[type="date"],
+        .form-group input[type="number"] {
+            padding-right: 16px;
+        }
+
+        .form-group input::placeholder {
+            color: #C2B6AE;
+            font-weight: 600;
+        }
+
+        .form-group input:focus {
+            border-color: var(--panel-border);
+            background: var(--input-bg);
+        }
+
+        .form-group input:focus + i {
+            color: var(--accent-primary);
+        }
+
+        /* Dynamic Field Animation */
+        #katering-fields {
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        #katering-fields.hidden {
+            display: none;
+            opacity: 0;
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            grid-column: span 2;
+            width: 100%;
+            padding: 16px;
+            margin-top: 1rem;
+            background: var(--accent-primary);
+            color: white;
+            font-weight: 900;
+            font-size: 1.1rem;
+            font-family: var(--font-game);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 4px solid var(--panel-border);
+            border-radius: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 6px 0 var(--accent-shadow);
+            transform: translateY(0);
+            transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.2s ease;
+        }
+
+        .btn-submit:hover {
+            background: #E3794D;
+        }
+
+        .btn-submit:active {
+            transform: translateY(6px);
+            box-shadow: 0 0px 0 var(--accent-shadow);
+            margin-bottom: 6px;
+        }
+
+        /* Bottom Action Bar */
+        .bottom-actions {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 3px dashed var(--input-border);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 800;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover { color: var(--accent-primary); }
+
+        /* Success Overlay */
+        #success-overlay {
+            position: absolute;
+            inset: 0;
+            background: var(--panel-bg);
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        #success-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .success-icon {
+            font-size: 5rem;
+            color: var(--accent-green);
+            margin-bottom: 1rem;
+            animation: bounce 1s infinite alternate;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+
+        @media (max-width: 600px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .form-group.full-width { grid-column: span 1; }
+            .btn-submit { grid-column: span 1; }
+            .card-body { padding: 1.5rem; }
+            .brand-title { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ambient Floating Particles -->
+    <div class="particle p1"></div>
+    <div class="particle p2"></div>
+    <div class="particle p3"></div>
+    <div class="particle p4"></div>
+    <div class="particle p5"></div>
+
+    <!-- Main Wrapper -->
+    <div class="game-window">
+        <div class="game-ui-card">
+            
+            <!-- Window Style Header -->
+            <div class="window-header">
+                <div class="window-dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+                <div class="window-title">Velmont_Booking.exe</div>
+                <div class="window-dots" style="visibility: hidden;">
+                    <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                </div>
+            </div>
+
+            <!-- Card Content -->
+            <div class="card-body">
+                
+                <div class="menu-header">
+                    <h1 class="brand-title"><i class="ph-fill ph-calendar-check" style="color: var(--accent-primary);"></i> FORMULIR INDEN</h1>
+                    
+                    <!-- Form Type Tabs -->
+                    <div class="category-tabs">
+                        <button class="tab-btn active" id="tab-katering" onclick="switchTab('katering')">
+                            <i class="ph-bold ph-package"></i> Katering
+                        </button>
+                        <button class="tab-btn" id="tab-venue" onclick="switchTab('venue')">
+                            <i class="ph-bold ph-map-pin"></i> Venue / Event
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Booking Form -->
+                <form id="bookingForm" onsubmit="submitForm(event)">
+                    <div class="form-grid">
+                        
+                        <!-- Common Fields -->
+                        <div class="form-group full-width">
+                            <label>Nama Lengkap</label>
+                            <div class="input-wrapper">
+                                <input type="text" placeholder="Masukkan nama lengkap" required>
+                                <i class="ph-bold ph-user"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Pekerjaan</label>
+                            <div class="input-wrapper">
+                                <input type="text" placeholder="Pekerjaan / Instansi" required>
+                                <i class="ph-bold ph-briefcase"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Citizen ID (CID)</label>
+                            <div class="input-wrapper">
+                                <input type="text" placeholder="Nomor CID" required>
+                                <i class="ph-bold ph-identification-card"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Nomor HP</label>
+                            <div class="input-wrapper">
+                                <input type="tel" placeholder="08xx-xxxx-xxxx" required>
+                                <i class="ph-bold ph-phone"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Tanggal Booking</label>
+                            <div class="input-wrapper">
+                                <input type="date" required>
+                                <i class="ph-bold ph-calendar-blank"></i>
+                            </div>
+                        </div>
+
+                        <!-- Specific Field for Katering -->
+                        <div class="form-group" id="katering-fields">
+                            <label>Jumlah Paket (Min. 10)</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="package-count" min="10" placeholder="Minimal 10 paket" required>
+                                <i class="ph-bold ph-box-arrow-up"></i>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn-submit">
+                            <span id="btn-text">Kirim Permintaan</span>
+                            <i class="ph-bold ph-paper-plane-right"></i>
+                        </button>
+
+                    </div>
+                </form>
+
+                <!-- Bottom Actions -->
+                <div class="bottom-actions">
+                    <a href="../index.html" class="back-link">
+                        <i class="ph-bold ph-arrow-left"></i> Kembali ke Menu Utama
+                    </a>
+                </div>
+
+            </div>
+
+            <!-- Success Overlay (Shown after submit) -->
+            <div id="success-overlay">
+                <i class="ph-fill ph-check-circle success-icon"></i>
+                <h2 style="font-weight: 900; color: var(--text-main); margin-bottom: 10px;">Inden Terkirim!</h2>
+                <p style="color: var(--text-muted); font-weight: 700; text-align: center; max-width: 80%; margin-bottom: 20px;">
+                    Pesanan Anda telah masuk ke sistem. Kru kami akan segera menghubungi Anda.
+                </p>
+                <button onclick="resetForm()" class="btn-submit" style="width: auto; padding: 10px 24px;">
+                    <i class="ph-bold ph-arrow-counter-clockwise"></i> Buat Pesanan Baru
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- JavaScript for Tab Switching & Form Handling -->
+    <script>
+        function switchTab(type) {
+            // Update Tab UI
+            document.getElementById('tab-katering').classList.remove('active');
+            document.getElementById('tab-venue').classList.remove('active');
+            document.getElementById('tab-' + type).classList.add('active');
+
+            // Toggle Katering specific fields
+            const kateringFields = document.getElementById('katering-fields');
+            const packageInput = document.getElementById('package-count');
+
+            if (type === 'katering') {
+                kateringFields.classList.remove('hidden');
+                packageInput.setAttribute('required', 'true');
+            } else {
+                kateringFields.classList.add('hidden');
+                packageInput.removeAttribute('required');
+            }
+        }
+
+        function submitForm(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-text');
+            btn.innerText = 'Mengirim...';
+            
+            // Simulate API request delay
+            setTimeout(() => {
+                document.getElementById('success-overlay').classList.add('active');
+                btn.innerText = 'Kirim Permintaan';
+            }, 1000);
+        }
+
+        function resetForm() {
+            document.getElementById('bookingForm').reset();
+            document.getElementById('success-overlay').classList.remove('active');
+            switchTab('katering'); // Reset to default tab
+        }
+    </script>
+</body>
+</html>

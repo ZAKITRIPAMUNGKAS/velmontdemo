@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Velmont Resto - Landing Page</title>
+    <link rel="icon" href="./assets/logo.png" type="image/png">
+    <!-- Google Fonts - Cozy Serif (Lora) and Rounded Sans (Nunito) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Nunito:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <!-- Custom Cyber Cursor Effect -->
+    <div class="cursor-glow"></div>
+
+    <!-- HERO SECTION -->
+    <section class="hero-section" id="hero">
+        <div class="hero-bg" style="background-image: url('./assets/bg_herosection.png');"></div>
+        <div class="hero-overlay"></div>
+
+        <!-- Cyber Grid Background Element -->
+        <div class="grid-overlay"></div>
+
+        <!-- Header Navigation (Cozy Game Style) -->
+        <header class="header">
+            <!-- Window Dots -->
+            <div class="window-dots-container">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            
+            <div class="logo">
+                <span class="logo-top">VELMONT RESTO</span>
+            </div>
+            
+            <!-- Live Clock -->
+            <div class="header-clock" id="live-clock">
+                --:--:--
+            </div>
+        </header>
+
+
+
+        <!-- Interactive Character & Table Area -->
+        <div class="interactive-stage" id="interactive-stage">
+            <!-- Background Objects (Behind Character) -->
+            <div class="interactive-object" id="obj-menu">
+                <img src="./assets/obj_listtmenu.png" alt="Menu Board" class="object-img">
+                <div class="object-trigger" data-label="Menu Restoran"></div>
+            </div>
+            <div class="interactive-object" id="obj-booking">
+                <img src="./assets/obj_bookinglist.png" alt="Booking List" class="object-img">
+                <div class="object-trigger" data-label="Daftar Booking"></div>
+            </div>
+            <div class="interactive-object" id="obj-clockin">
+                <img src="./assets/obj_clockin.png" alt="Clock-in Terminal" class="object-img">
+                <div class="object-trigger"></div>
+            </div>
+
+            <!-- Interactive Character (Follows cursor, layered behind table) -->
+            <div class="character-wrapper" id="character">
+                <img src="./assets/karakter/hay.png" alt="Velmont Staff Character" id="char-img">
+                <div class="char-shadow"></div>
+                <div class="char-bubble" id="char-bubble">Halo! Selamat datang di Velmont.</div>
+            </div>
+
+            <!-- Foreground Table Hero Section (Layered in front of character) -->
+            <div class="hero-table-container">
+                <img src="./assets/tbl_herosection.png" alt="Meja Kasir Velmont" class="hero-table-img">
+                
+                <!-- Cashier Register Active Zone (Invisible trigger) -->
+                <div class="cashier-zone-trigger" id="cashier-zone"></div>
+            </div>
+
+            <!-- Foreground Objects (In front of table) -->
+            <div class="interactive-object" id="obj-kasir">
+                <img src="./assets/obj_kasir.png" alt="Mesin Kasir" class="object-img">
+                <div class="object-trigger"></div>
+            </div>
+            <div class="interactive-object" id="obj-bell">
+                <img src="./assets/obj_bell.png" alt="Bel Kasir" class="object-img">
+                <div class="object-trigger" data-label="Bel Panggil Staff"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2 -->
+    <section class="section-two" id="about">
+        <div class="section-bg" style="background-image: url('./assets/bg_section2.png');"></div>
+        <div class="section-overlay"></div>
+
+        <div class="section-two-container">
+            <!-- 1. Closed State Elements (Peeking Character) -->
+            <div class="info-peeking-char" id="info-peeking-char">
+                <img src="./assets/infohide_section2.png" alt="Karakter Mengintip" class="peeking-img">
+                <div class="peeking-trigger" id="peeking-trigger"></div>
+            </div>
+
+            <!-- 2. Whiteboard Container (Open State) -->
+            <div class="info-whiteboard-container" id="info-whiteboard-container">
+                <!-- We wrap the pushing character + whiteboard image -->
+                <div class="whiteboard-image-wrapper">
+                    <img src="./assets/infounhide_section2.png" alt="Papan Info Outlet" class="whiteboard-bg-img">
+                    
+                    <!-- Close button sits on image-wrapper, not clipped by overflow:hidden overlay -->
+                    <button class="whiteboard-close-btn" id="whiteboard-close-btn" title="Tutup Info">×</button>
+
+                    <!-- Overlay Content on the Beige Whiteboard Canvas -->
+                    <div class="whiteboard-overlay-content">
+                        
+                        <!-- Poster Board Area centered on the whiteboard -->
+                        <div class="poster-board-area">
+                            <!-- Poster 1: Rapat Koordinasi -->
+                            <div class="a4-poster" id="poster-1">
+                                <div class="tape-decor"></div>
+                                <div class="poster-header">PENGUMUMAN</div>
+                                <div class="poster-sub">Koordinasi Bulanan</div>
+                                <div class="poster-divider"></div>
+                                <div class="poster-body">
+                                    <div class="poster-item">
+                                        <span class="poster-item-title">Rapat Koordinasi</span>
+                                        <p class="poster-item-text">Sabtu, 30 Mei 2026<br>Lobby Lakehouse</p>
+                                    </div>
+                                </div>
+                                <div class="poster-footer">
+                                    <span class="poster-sign">CEO Office</span>
+                                </div>
+                            </div>
+
+
+
+                            <!-- Poster 2: Menu Spesial -->
+                            <div class="a4-poster" id="poster-2">
+                                <div class="tape-decor"></div>
+                                <div class="poster-header">DRAFT MENU</div>
+                                <div class="poster-sub">Velmont Resto V1</div>
+                                <div class="poster-divider"></div>
+                                <div class="poster-body">
+                                    <div class="poster-item">
+                                        <span class="poster-item-title">Promo Kuliner</span>
+                                        <p class="poster-item-text">Diskon 20% khusus menu baru daging sapi.</p>
+                                    </div>
+                                </div>
+                                <div class="poster-footer">
+                                    <span class="poster-sign">Kitchen Dept</span>
+                                </div>
+                            </div>
+
+                            <!-- Poster 3: Absensi Shift -->
+                            <div class="a4-poster" id="poster-3">
+                                <div class="tape-decor"></div>
+                                <div class="poster-header">TATA TERTIB</div>
+                                <div class="poster-sub">Absensi Absolut</div>
+                                <div class="poster-divider"></div>
+                                <div class="poster-body">
+                                    <div class="poster-item">
+                                        <span class="poster-item-title">Wajib Clock-In</span>
+                                        <p class="poster-item-text">Karyawan wajib clock-in/out di terminal absensi.</p>
+                                    </div>
+                                </div>
+                                <div class="poster-footer">
+                                    <span class="poster-sign">HRD Team</span>
+                                </div>
+                            </div>
+
+                            <!-- Poster 4: JPG Flyer -->
+                            <div class="a4-poster image-poster" id="poster-4">
+                                <div class="tape-decor"></div>
+                                <img src="./assets/kenapa.jpg" alt="Promo Flyer JPG" class="poster-jpg-img">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2026 Velmont Resto. Dikembangkan oleh GEMALA.DEV.</p>
+    </footer>
+
+    <!-- POSTER ZOOM OVERLAY MODAL -->
+    <div class="poster-zoom-overlay" id="poster-zoom-overlay">
+        <div class="zoomed-poster-container">
+            <button class="close-zoom-btn">&times;</button>
+            <div class="a4-poster large-version">
+                <div class="tape-decor"></div>
+                <div class="poster-header">PENGUMUMAN</div>
+                <div class="poster-sub">Velmont Resto Staff V1</div>
+                <div class="poster-divider"></div>
+                <div class="poster-body">
+                    <div class="poster-item">
+                        <span class="poster-item-title">Rapat Koordinasi Bulanan</span>
+                        <p class="poster-item-text">Hari/Tgl: Sabtu, 30 Mei 2026<br>Tempat: Lobby Lakehouse</p>
+                    </div>
+                    <div class="poster-item">
+                        <span class="poster-item-title">Agenda Utama</span>
+                        <p class="poster-item-text">Pembahasan jam absensi shift & penyelarasan sistem data Seaside.</p>
+                    </div>
+                </div>
+                <div class="poster-footer">
+                    <p class="poster-sign">Management Resto<br><strong>Moza Leonardo</strong></p>
+                    <div class="poster-stamp">RESTO</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./js/app.js"></script>
+</body>
+</html>
+
+
