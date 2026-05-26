@@ -9,7 +9,7 @@ const VELMONT_ROLES = {
     manager: { key: 'manager', name: 'Valerie Swan', title: 'Manajer Outlet', level: 5, icon: 'ph-briefcase', color: '#D66D40' },
     svp: { key: 'svp', name: 'Kael Percival', title: 'SVP Operational', level: 4, icon: 'ph-shield-check', color: '#4A90E2' },
     supplier: { key: 'supplier', name: 'Winston Stark', title: 'Supplier Bahan', level: 4, icon: 'ph-truck', color: '#5D8A56' },
-    warlok: { key: 'warlok', name: 'Budi Warlok', title: 'Intern / Warlok', level: 1, icon: 'ph-user', color: '#9A7B6D' }
+    warlok: { key: 'warlok', name: 'Budiono Siregar', title: 'Intern / Warlok', level: 1, icon: 'ph-user', color: '#9A7B6D' }
 };
 
 // Page access permissions (minimum level required)
@@ -508,7 +508,7 @@ const injectSidebar = () => {
             <div class="sidebar-footer">
                 <span class="simulator-selector-label">Simulator Role</span>
                 <select class="simulator-select" onchange="changeGlobalSimulatedRole(this.value)">
-                    <option value="warlok" ${activeRole.key === 'warlok' ? 'selected' : ''}>Budi Warlok (Intern - Lvl 1)</option>
+                    <option value="warlok" ${activeRole.key === 'warlok' ? 'selected' : ''}>Budiono Siregar (Intern - Lvl 1)</option>
                     <option value="svp" ${activeRole.key === 'svp' ? 'selected' : ''}>Kael Percival (SVP - Lvl 4)</option>
                     <option value="supplier" ${activeRole.key === 'supplier' ? 'selected' : ''}>Winston Stark (Supplier - Lvl 4)</option>
                     <option value="manager" ${activeRole.key === 'manager' ? 'selected' : ''}>Valerie Swan (Manajer - Lvl 5)</option>
