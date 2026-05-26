@@ -99,6 +99,12 @@ const injectGlobalStyles = () => {
             flex-grow: 1;
         }
 
+        .card-body {
+            height: auto !important;
+            max-height: none !important;
+            overflow-y: visible !important;
+        }
+
         /* Cozy Game Sidebar */
         .cozy-sidebar {
             position: fixed;
