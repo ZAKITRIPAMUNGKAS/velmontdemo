@@ -99,7 +99,46 @@
         .btn-view-slip { background: var(--accent-primary); color: white; border: 2px solid var(--panel-border); font-family: var(--font-game); font-weight: 900; font-size: 0.75rem; padding: 5px 10px; border-radius: 8px; cursor: pointer; }
         .btn-view-slip:hover { background: var(--accent-shadow); }
 
-        .payslip-ticket { background: var(--input-bg); border: 3px solid var(--input-border); border-radius: 20px; padding: 20px; min-height: 200px; }
+        .payslip-ticket { position: relative; background: var(--input-bg); border: 3px solid var(--input-border); border-radius: 20px; padding: 20px; min-height: 200px; overflow: hidden; transition: transform 0.15s ease-in-out; }
+        .payslip-ticket.shake { animation: ticketShake 0.15s ease-in-out; }
+        @keyframes ticketShake {
+            0% { transform: scale(1); }
+            25% { transform: scale(0.98) translateY(3px) rotate(-0.5deg); }
+            50% { transform: scale(0.98) translateY(-3px) rotate(0.5deg); }
+            75% { transform: scale(0.99) translateX(3px); }
+            100% { transform: scale(1) translateX(0); }
+        }
+        .payslip-stamp {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(5) rotate(-15deg);
+            opacity: 0;
+            border: 6px solid #5D8A56;
+            color: #5D8A56;
+            font-family: var(--font-game);
+            font-size: 2.2rem;
+            font-weight: 900;
+            padding: 8px 24px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            pointer-events: none;
+            z-index: 10;
+            user-select: none;
+            background: rgba(253, 248, 245, 0.9);
+            box-shadow: 0 0 15px rgba(93, 138, 86, 0.2);
+            display: none;
+        }
+        .payslip-stamp.stamped {
+            display: block;
+            animation: stampEffect 0.25s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards;
+        }
+        @keyframes stampEffect {
+            0% { transform: translate(-50%, -50%) scale(4) rotate(-35deg); opacity: 0; }
+            80% { transform: translate(-50%, -50%) scale(0.9) rotate(-10deg); opacity: 0.9; }
+            100% { transform: translate(-50%, -50%) scale(1) rotate(-15deg); opacity: 1; }
+        }
         .payslip-header { text-align: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 3px dashed var(--input-border); }
         .payslip-row { display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 700; padding: 8px 0; border-bottom: 1px dashed var(--input-border); }
         .payslip-total { display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: 900; padding: 12px 0; margin-top: 8px; color: var(--accent-primary); border-top: 3px solid var(--panel-border); }
@@ -291,8 +330,19 @@
                 warningHeader = `<div style="background: #FFEBEE; border: 2px solid #D32F2F; border-radius:12px; padding: 10px; margin-bottom:15px; color:#D32F2F; font-size:0.8rem; font-weight:800;"><i class="ph-fill ph-warning-circle"></i> Peringatan: Jabatan ini belum terkonfigurasi basic salary tetapnya di sistem database. (Incomplete)</div>`;
             }
 
+            const paidKey = `velmont_paid_${emp.id}`;
+            const isPaid = localStorage.getItem(paidKey) === 'true';
+
+            let payButtonHtml = "";
+            if (emp.basicSalary !== null) {
+                payButtonHtml = isPaid
+                    ? `<button class="btn-game btn-green" disabled style="width: 100%; margin-top: 15px; background: #BDC3C7; border-color: #4A332A; box-shadow: none; cursor: not-allowed; color:#7F8C8D;"><i class="ph-bold ph-check-square"></i> Gaji Telah Dibayar</button>`
+                    : `<button class="btn-game btn-primary" id="btn-pay-salary" onclick="triggerPayment('${emp.id}')" style="width: 100%; margin-top: 15px;"><i class="ph-bold ph-hand-coins"></i> Bayar Gaji (Transfer)</button>`;
+            }
+
             ticket.innerHTML = `
                 ${warningHeader}
+                <div class="payslip-stamp ${isPaid ? 'stamped' : ''}" id="payment-stamp">LUNAS</div>
                 <div class="payslip-header">
                     <h2 style="font-weight:900; letter-spacing:0.5px; font-size:1.4rem;">VELMONT RESTO</h2>
                     <p style="font-size:0.75rem; color:var(--text-muted); font-weight:800; text-transform:uppercase;">Rincian Slip Gaji Karyawan</p>
@@ -306,11 +356,68 @@
                 <div class="payslip-row"><span>Uang Tunjangan Makan</span><span>Rp ${mealAllowance.toLocaleString('id-ID')}</span></div>
                 <div class="payslip-row"><span>Uang Tunjangan Transport</span><span>Rp ${transportAllowance.toLocaleString('id-ID')}</span></div>
                 <div class="payslip-total"><span>Take Home Pay</span><span>Rp ${totalSalary.toLocaleString('id-ID')}</span></div>
+                
+                ${payButtonHtml}
+                
                 <div style="text-align: center; margin-top: 25px; opacity:0.5;">
                     <i class="ph-bold ph-barcode" style="font-size: 3.5rem; color: var(--text-muted);"></i>
                     <p style="font-size: 0.6rem; font-weight:800; color:var(--text-muted);">ID KARYAWAN: VLM-00${emp.id}</p>
                 </div>
             `;
+        }
+
+        function triggerPayment(empId) {
+            const ticketContainer = document.getElementById("payslip-ticket-container");
+            const stamp = document.getElementById("payment-stamp");
+            const payButton = document.getElementById("btn-pay-salary");
+
+            // Save state
+            localStorage.setItem(`velmont_paid_${empId}`, 'true');
+
+            // Sound simulation (Web Audio API)
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Stamp impact sound
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(120, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(10, audioCtx.currentTime + 0.18);
+                
+                gain.gain.setValueAtTime(1.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.18);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.18);
+            } catch(e) {}
+
+            // Shake ticket container
+            ticketContainer.classList.add("shake");
+            
+            // Apply stamp animation
+            setTimeout(() => {
+                stamp.classList.add("stamped");
+                
+                // Disable button
+                if (payButton) {
+                    payButton.innerHTML = `<i class="ph-bold ph-check-square"></i> Gaji Telah Dibayar`;
+                    payButton.style.background = '#BDC3C7';
+                    payButton.style.borderColor = '#4A332A';
+                    payButton.style.boxShadow = 'none';
+                    payButton.style.cursor = 'not-allowed';
+                    payButton.style.color = '#7F8C8D';
+                    payButton.disabled = true;
+                }
+            }, 50);
+
+            // Clean up shake
+            setTimeout(() => {
+                ticketContainer.classList.remove("shake");
+            }, 300);
         }
 
         changeSimulatedRole();
